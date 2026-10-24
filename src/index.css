@@ -198,6 +198,196 @@ body {
   border: 1px solid var(--border-subtle);
 }
 
+/* Liquid Wave Progress Container */
+.liquid-progress-container {
+  position: relative;
+  width: 280px;
+  height: 280px;
+  margin: 10px auto 24px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.liquid-canvas {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  box-shadow: var(--shadow-md);
+}
+
+.liquid-overlay-content {
+  position: relative;
+  z-index: 10;
+  text-align: center;
+  pointer-events: none;
+}
+
+.progress-percent {
+  font-size: 2.8rem;
+  font-weight: 900;
+  letter-spacing: -0.03em;
+  color: var(--text-primary);
+  text-shadow: 0 1px 4px rgba(255, 255, 255, 0.6);
+  font-variant-numeric: tabular-nums;
+  line-height: 1;
+  margin-bottom: 4px;
+}
+
+[data-theme="twilight"] .progress-percent {
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.8);
+}
+
+.progress-volume {
+  font-size: 1rem;
+  font-weight: 700;
+  color: var(--text-primary);
+  margin-bottom: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.progress-remaining {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-secondary);
+  font-variant-numeric: tabular-nums;
+}
+
+.celebration-badge {
+  background: #10B981;
+  color: #FFFFFF;
+  font-size: 0.75rem;
+  font-weight: 800;
+  padding: 4px 12px;
+  border-radius: 20px;
+  margin-bottom: 8px;
+  display: inline-block;
+  animation: bounce 1s infinite alternate;
+}
+
+@keyframes bounce {
+  from { transform: translateY(0); }
+  to { transform: translateY(-4px); }
+}
+
+/* Logging Controls */
+.log-controls-section {
+  margin-bottom: 24px;
+}
+
+.hero-log-wrapper {
+  margin-bottom: 12px;
+}
+
+.hero-log-btn {
+  width: 100%;
+  padding: 16px 20px;
+  background: linear-gradient(135deg, var(--accent-oasis-light), var(--accent-oasis));
+  color: #FFFFFF;
+  border: none;
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  box-shadow: 0 6px 20px rgba(13, 148, 136, 0.28);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  transition: transform 0.15s ease, filter 0.2s ease;
+}
+
+.hero-log-btn:hover {
+  filter: brightness(1.06);
+  transform: translateY(-2px);
+}
+
+.hero-log-btn:active {
+  transform: scale(0.98);
+}
+
+.hero-log-icon {
+  font-size: 1.5rem;
+}
+
+.hero-log-title {
+  font-size: 1.3rem;
+  font-weight: 800;
+  letter-spacing: -0.01em;
+}
+
+.hero-log-sub {
+  font-size: 0.85rem;
+  opacity: 0.9;
+  font-weight: 500;
+}
+
+.quick-presets-row {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 12px;
+}
+
+.preset-btn {
+  flex: 1;
+  padding: 12px;
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  background: var(--bg-surface);
+  color: var(--text-primary);
+  font-size: 0.85rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  text-align: center;
+}
+
+.preset-btn:hover {
+  border-color: var(--accent-oasis);
+  background: var(--bg-card);
+}
+
+.preset-btn:active {
+  transform: scale(0.97);
+}
+
+/* Floating Undo Toast */
+.undo-toast {
+  background: #1E293B;
+  color: #FFFFFF;
+  padding: 12px 18px;
+  border-radius: var(--radius-sm);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  animation: slideUp 0.2s ease-out;
+  font-size: 0.9rem;
+  font-weight: 600;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(8px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.undo-btn {
+  background: #334155;
+  border: none;
+  color: #38BDF8;
+  padding: 6px 12px;
+  border-radius: 6px;
+  font-weight: 700;
+  cursor: pointer;
+  font-size: 0.82rem;
+  transition: background-color 0.2s ease;
+}
+
+.undo-btn:hover {
+  background: #475569;
+}
+
 /* Condition Selectors */
 .condition-section {
   background: var(--bg-surface);

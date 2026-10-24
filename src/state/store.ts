@@ -1,6 +1,7 @@
 import {
   WahaState,
   UserProfile,
+  LogEntry,
   loadStoredState,
   saveStoredState,
 } from './storage.ts';
@@ -12,6 +13,8 @@ class Store {
   private state: WahaState;
   private listeners: Set<StateListener> = new Set();
   private injectedNow: Date | null = null;
+  public lastLoggedEntry: LogEntry | null = null;
+  public undoTimeoutId: any = null;
 
   constructor() {
     this.state = loadStoredState();
@@ -23,7 +26,6 @@ class Store {
       const params = new URLSearchParams(window.location.search);
       const nowParam = params.get('now');
       if (nowParam) {
-        // format HH:mm
         const [hours, minutes] = nowParam.split(':').map(Number);
         if (!isNaN(hours) && !isNaN(minutes)) {
           const d = new Date();
@@ -48,7 +50,7 @@ class Store {
     return () => this.listeners.delete(listener);
   }
 
-  private notify(): void {
+  public notify(): void {
     saveStoredState(this.state);
     this.listeners.forEach((listener) => listener(this.state));
   }
@@ -86,6 +88,55 @@ class Store {
     this.notify();
   }
 
+  public logWater(amountMl: number): LogEntry {
+    const entry: LogEntry = {
+      id: `${Date.now()}-${Math.random().toString(36).slice(2, 7)}`,
+      timestamp: this.getNow().getTime(),
+      amountMl,
+    };
+
+    this.state.todayEntries.push(entry);
+    this.lastLoggedEntry = entry;
+
+    if (this.undoTimeoutId) {
+      clearTimeout(this.undoTimeoutId);
+    }
+    this.undoTimeoutId = setTimeout(() => {
+      this.lastLoggedEntry = null;
+      this.notify();
+    }, 5000);
+
+    this.notify();
+    return entry;
+  }
+
+  public undoLastLog(): boolean {
+    if (!this.lastLoggedEntry) {
+      return false;
+    }
+
+    const index = this.state.todayEntries.findIndex(
+      (e) => e.id === this.lastLoggedEntry?.id
+    );
+
+    if (index !== -1) {
+      this.state.todayEntries.splice(index, 1);
+      this.lastLoggedEntry = null;
+      if (this.undoTimeoutId) {
+        clearTimeout(this.undoTimeoutId);
+        this.undoTimeoutId = null;
+      }
+      this.notify();
+      return true;
+    }
+
+    return false;
+  }
+
+  public getTodayLoggedMl(): number {
+    return this.state.todayEntries.reduce((sum, e) => sum + e.amountMl, 0);
+  }
+
   public getCalculatedTarget(): TargetResult {
     return calculateDailyTarget(
       {
@@ -94,6 +145,29 @@ class Store {
       },
       this.state.conditions
     );
+  }
+
+  public getProgress(): {
+    loggedMl: number;
+    targetMl: number;
+    remainingMl: number;
+    percent: number;
+    isGoalReached: boolean;
+  } {
+    const target = this.getCalculatedTarget();
+    const targetMl = Math.round(target.displayTargetL * 1000);
+    const loggedMl = this.getTodayLoggedMl();
+    const remainingMl = Math.max(0, targetMl - loggedMl);
+    const percent = Math.min(100, Math.round((loggedMl / targetMl) * 100)) || 0;
+    const isGoalReached = loggedMl >= targetMl;
+
+    return {
+      loggedMl,
+      targetMl,
+      remainingMl,
+      percent,
+      isGoalReached,
+    };
   }
 }
 

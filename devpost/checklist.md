@@ -29,7 +29,7 @@ Build mode: fast
   Learner check: Open http://localhost:5173, complete the onboarding setup with safety acknowledgment, click "Hot" then "Extreme + 30m", and watch the target roll up from 2.3 L to 3.1 L and 3.7 L with transparent breakdown tags.
   Commit: `feat: target display, condition controls, and basic onboarding`
 
-- [ ] **3. One-Tap Logging, Liquid Wave & Static Deployment**
+- [x] **3. One-Tap Logging, Liquid Wave & Static Deployment**
   Becomes usable: Tap the large 250 ml button or 150/500 ml presets to log water intake, see the canvas sinusoidal liquid wave fill rise with ARIA progressbar updates, use 5-second undo toast, and verify static deployment build (`dist/` ready for GitHub Pages / Netlify).
   Why now: Completes the physical logging loop and establishes a working deployed static URL early in the build.
   PRD ref: `prd.md > Features and Behavior > 2. One-Tap Logging & Liquid Progress`
@@ -71,8 +71,8 @@ Build mode: fast
 
 ## Hands-on Checkpoints
 
-- [ ] Early usable behavior explored — Slice 2 (Onboarding and "number changes and tells you why" dynamic stacking)
-- [ ] Static deployment verified — Slice 3 (Live production bundle)
+- [x] Early usable behavior explored — Slice 2 (Onboarding and "number changes and tells you why" dynamic stacking)
+- [x] Static deployment verified — Slice 3 (Live production bundle)
 - [ ] Draft demo video recorded — Slice 4 (Ramadan evening mode with `?now=HH:mm` override)
 - [ ] Final kick-the-tires exploration and feedback completed — Slice 5 (Complete P0 core journey)
 

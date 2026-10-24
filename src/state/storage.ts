@@ -71,6 +71,9 @@ export const DEFAULT_STATE: WahaState = {
 
 export function loadStoredState(): WahaState {
   try {
+    if (typeof localStorage === 'undefined') {
+      return { ...DEFAULT_STATE };
+    }
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) return { ...DEFAULT_STATE };
     const parsed = JSON.parse(raw);
@@ -84,14 +87,16 @@ export function loadStoredState(): WahaState {
       history: parsed.history && typeof parsed.history === 'object' ? parsed.history : {},
     };
   } catch (err) {
-    console.warn('Waha: localStorage unavailable or corrupted, using in-memory fallback', err);
+    console.warn('Waha: localStorage unavailable, using in-memory fallback', err);
     return { ...DEFAULT_STATE };
   }
 }
 
 export function saveStoredState(state: WahaState): void {
   try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    if (typeof localStorage !== 'undefined') {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(state));
+    }
   } catch (err) {
     console.warn('Waha: Failed to save to localStorage', err);
   }

@@ -1,6 +1,8 @@
 import { store } from './state/store.ts';
 import { renderHeader } from './components/Header.ts';
 import { renderTargetDisplay } from './components/TargetDisplay.ts';
+import { renderLiquidProgress, initLiquidCanvas } from './components/LiquidProgress.ts';
+import { renderLogControls } from './components/LogControls.ts';
 import { renderConditionSelector } from './components/ConditionSelector.ts';
 import { renderOnboardingModal } from './components/SafetyModal.ts';
 
@@ -10,6 +12,7 @@ function renderApp(): void {
 
   const state = store.getState();
   const target = store.getCalculatedTarget();
+  const progress = store.getProgress();
 
   // Update theme on root element
   if (state.ramadanMode) {
@@ -22,11 +25,14 @@ function renderApp(): void {
     ${renderHeader(state.ramadanMode)}
     <main>
       ${renderTargetDisplay(target)}
+      ${renderLiquidProgress(progress)}
+      ${renderLogControls({ lastLoggedMl: store.lastLoggedEntry?.amountMl ?? null })}
       ${renderConditionSelector(state.conditions)}
     </main>
     ${renderOnboardingModal(state.profile)}
   `;
 
+  initLiquidCanvas(progress.percent);
   attachEventListeners();
 }
 
@@ -36,6 +42,25 @@ function attachEventListeners(): void {
   if (ramadanBtn) {
     ramadanBtn.onclick = () => {
       store.toggleRamadanMode();
+    };
+  }
+
+  // Water logging buttons (hero + presets)
+  const logBtns = document.querySelectorAll<HTMLButtonElement>('[data-amount]');
+  logBtns.forEach((btn) => {
+    btn.onclick = () => {
+      const amount = Number(btn.getAttribute('data-amount'));
+      if (!isNaN(amount) && amount > 0) {
+        store.logWater(amount);
+      }
+    };
+  });
+
+  // Undo button
+  const undoBtn = document.getElementById('btn-undo-log');
+  if (undoBtn) {
+    undoBtn.onclick = () => {
+      store.undoLastLog();
     };
   }
 
