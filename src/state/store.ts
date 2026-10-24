@@ -2,10 +2,13 @@ import {
   WahaState,
   UserProfile,
   LogEntry,
+  DayRecord,
   loadStoredState,
   saveStoredState,
+  DEFAULT_STATE,
 } from './storage.ts';
 import { calculateDailyTarget, TargetResult } from '../engine/targetCalculator.ts';
+import { getHydrationDateKey, getPast7DateKeys } from '../engine/dateKey.ts';
 
 type StateListener = (state: WahaState) => void;
 
@@ -15,10 +18,12 @@ class Store {
   private injectedNow: Date | null = null;
   public lastLoggedEntry: LogEntry | null = null;
   public undoTimeoutId: any = null;
+  public isAboutOpen: boolean = false;
 
   constructor() {
     this.state = loadStoredState();
     this.initClockOverride();
+    this.syncActiveDayRecord();
   }
 
   private initClockOverride(): void {
@@ -41,6 +46,10 @@ class Store {
     return this.injectedNow ? new Date(this.injectedNow.getTime()) : new Date();
   }
 
+  public getActiveDateKey(): string {
+    return getHydrationDateKey(this.getNow().getTime(), this.state.windowConfig.iftarTime);
+  }
+
   public getState(): WahaState {
     return this.state;
   }
@@ -51,8 +60,27 @@ class Store {
   }
 
   public notify(): void {
+    this.syncActiveDayRecord();
     saveStoredState(this.state);
     this.listeners.forEach((listener) => listener(this.state));
+  }
+
+  private syncActiveDayRecord(): void {
+    const key = this.getActiveDateKey();
+    const target = this.getCalculatedTarget();
+    const totalLogged = this.getTodayLoggedMl();
+    const isAchieved = totalLogged >= target.unroundedTargetL * 1000 * 0.90;
+
+    this.state.history[key] = {
+      dateKey: key,
+      profileSnapshot: { ...this.state.profile },
+      conditions: { ...this.state.conditions },
+      unroundedTargetL: target.unroundedTargetL,
+      effectiveTargetL: target.displayTargetL,
+      displayTargetL: target.displayTargetL,
+      entries: [...this.state.todayEntries],
+      ramadanMode: this.state.ramadanMode,
+    };
   }
 
   public setProfile(profile: Partial<UserProfile>): void {
@@ -85,6 +113,26 @@ class Store {
 
   public toggleRamadanMode(): void {
     this.state.ramadanMode = !this.state.ramadanMode;
+    this.notify();
+  }
+
+  public openAbout(): void {
+    this.isAboutOpen = true;
+    this.notify();
+  }
+
+  public closeAbout(): void {
+    this.isAboutOpen = false;
+    this.notify();
+  }
+
+  public resetLocalData(): void {
+    this.state = {
+      ...DEFAULT_STATE,
+      profile: { ...DEFAULT_STATE.profile, onboardingCompleted: false },
+    };
+    this.lastLoggedEntry = null;
+    this.isAboutOpen = false;
     this.notify();
   }
 
@@ -168,6 +216,85 @@ class Store {
       percent,
       isGoalReached,
     };
+  }
+
+  public getDerivedStreak(): number {
+    const currentKey = this.getActiveDateKey();
+    const [y, m, d] = currentKey.split('-').map(Number);
+    const baseDate = new Date(y, m - 1, d);
+
+    let streak = 0;
+
+    // Check if today is achieved (>= 90% of target)
+    const todayTarget = this.getCalculatedTarget();
+    const todayLogged = this.getTodayLoggedMl();
+    const todayAchieved = todayLogged >= todayTarget.unroundedTargetL * 1000 * 0.90;
+    if (todayAchieved) {
+      streak += 1;
+    }
+
+    // Check consecutive days prior to today
+    let checkDate = new Date(baseDate);
+    while (true) {
+      checkDate.setDate(checkDate.getDate() - 1);
+      const checkKey = `${checkDate.getFullYear()}-${(checkDate.getMonth() + 1).toString().padStart(2, '0')}-${checkDate.getDate().toString().padStart(2, '0')}`;
+      const record = this.state.history[checkKey];
+
+      if (!record) {
+        // Missing record breaks the streak
+        break;
+      }
+
+      const recordLogged = record.entries.reduce((s, e) => s + e.amountMl, 0);
+      const isRecordHit = recordLogged >= record.unroundedTargetL * 1000 * 0.90;
+
+      if (isRecordHit) {
+        streak += 1;
+      } else {
+        break;
+      }
+    }
+
+    return streak;
+  }
+
+  public getHistoryStrip(): Array<{
+    dateKey: string;
+    dayLabel: string;
+    isAchieved: boolean;
+    isToday: boolean;
+  }> {
+    const currentKey = this.getActiveDateKey();
+    const past7Keys = getPast7DateKeys(currentKey);
+
+    const dayLabels = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
+
+    return past7Keys.map((key) => {
+      const [y, m, d] = key.split('-').map(Number);
+      const dateObj = new Date(y, m - 1, d);
+      const label = dayLabels[dateObj.getDay()];
+
+      const isToday = key === currentKey;
+      let isAchieved = false;
+
+      if (isToday) {
+        const todayTarget = this.getCalculatedTarget();
+        isAchieved = this.getTodayLoggedMl() >= todayTarget.unroundedTargetL * 1000 * 0.90;
+      } else {
+        const record = this.state.history[key];
+        if (record) {
+          const totalLogged = record.entries.reduce((s, e) => s + e.amountMl, 0);
+          isAchieved = totalLogged >= record.unroundedTargetL * 1000 * 0.90;
+        }
+      }
+
+      return {
+        dateKey: key,
+        dayLabel: label,
+        isAchieved,
+        isToday,
+      };
+    });
   }
 }
 

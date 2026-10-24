@@ -14,7 +14,7 @@ Build mode: fast
   Why now: The unique kernel begins with the transparent calculation engine; verifying the core math first eliminates regression risks for all UI slices.
   PRD ref: `prd.md > Features and Behavior > 1. Transparent Target Calculation Engine`
   Spec ref: `spec.md > Components > 1. Configuration`, `spec.md > Components > 2. Target Engine`
-  Build: Initialize Vite + TypeScript project structure with self-hosted font, create `src/engine/engineConfig.ts`, implement `src/engine/targetCalculator.ts`, and create `src/engine/targetCalculator.test.ts`.
+  Build: Run `git init`, initialize Vite + TypeScript project structure with self-hosted font, create `src/engine/engineConfig.ts`, implement `src/engine/targetCalculator.ts`, and create `src/engine/targetCalculator.test.ts`.
   Verify (mechanical): Run `npm run test` and confirm 100% assertions pass for 2.3 L, 3.1 L, 3.7 L, and the 2.31 L base breakdown.
   Learner check: Run `npm run test` and inspect the clean test output verifying your exact target formulas.
   Commit: `feat: target calculation engine with baseline unit tests`
@@ -73,7 +73,7 @@ Build mode: fast
 
 - [x] Early usable behavior explored — Slice 2 (Onboarding and "number changes and tells you why" dynamic stacking)
 - [x] Static deployment verified — Slice 3 (Live production bundle)
-- [ ] Draft demo video recorded — Slice 4 (Ramadan evening mode with `?now=HH:mm` override)
+- [x] Draft demo video recorded — Slice 4 (Ramadan evening mode with `?now=HH:mm` override)
 - [ ] Final kick-the-tires exploration and feedback completed — Slice 5 (Complete P0 core journey)
 
 ## Final Review
