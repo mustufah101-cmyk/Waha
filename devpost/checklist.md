@@ -19,7 +19,7 @@ Build mode: fast
   Learner check: Run `npm run test` and inspect the clean test output verifying your exact target formulas.
   Commit: `feat: target calculation engine with baseline unit tests`
 
-- [ ] **2. Target Display, Condition Controls & Basic Onboarding**
+- [x] **2. Target Display, Condition Controls & Basic Onboarding**
   Becomes usable: A running web UI with basic onboarding screen (weight, outdoor time, safety disclaimer with required acknowledgment, "Start Oasis"), headline target in liters and cups, stacked breakdown lines explaining "+0.50 L Heat" and "+0.25 L Outdoors", and interactive condition pills (Mild/Hot/Extreme, workout toggle).
   Why now: Captures user profile immediately and puts the core "number changes and tells you why" demo moment on screen early.
   PRD ref: `prd.md > Screens and Layout > 1. Onboarding Modal`, `prd.md > Screens and Layout > 2. Main Hydration Screen`, `prd.md > Features and Behavior > 1. Transparent Target Calculation Engine`
