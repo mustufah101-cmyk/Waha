@@ -39,7 +39,7 @@ Build mode: fast
   Learner check: Tap "+250 ml" three times, observe the wave animating upward and remaining liters decrementing, test "Undo", and inspect the production build output.
   Commit: `feat: one-tap logging, undo toast, liquid wave, and static deployment`
 
-- [ ] **4. Ramadan Scheduler, Spaced Checkpoints, Twilight Theme & Demo Override**
+- [x] **4. Ramadan Scheduler, Spaced Checkpoints, Twilight Theme & Demo Override**
   Becomes usable: Ramadan mode toggle switching to twilight theme, pure scheduler with rolling 60-min 0.75 L cap, property test (1.5–4.5 L sweep asserting scheduled volume = min(target, windowCap) for short windows), and URL demo-clock override (`?now=HH:mm`) for camera-ready demo recording.
   Why now: Completes the second pillar of the unique kernel. Placed here so a full draft demo video can be recorded right away.
   PRD ref: `prd.md > Features and Behavior > 3. Ramadan Evening Scheduler ("Redistribute, Don't Fail")`

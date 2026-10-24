@@ -619,3 +619,159 @@ body {
     transition-duration: 0.01ms !important;
   }
 }
+
+/* Ramadan Scheduler Styles */
+.ramadan-section {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-md);
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: var(--shadow-sm);
+  text-align: center;
+}
+
+.ramadan-badge {
+  display: inline-block;
+  background: rgba(245, 158, 11, 0.15);
+  color: var(--accent-gold);
+  border: 1px solid var(--accent-gold);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  margin-bottom: 10px;
+}
+
+.ramadan-heading {
+  font-size: 1.2rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  margin-bottom: 6px;
+}
+
+.ramadan-subtext {
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  line-height: 1.4;
+  margin-bottom: 16px;
+}
+
+.countdown-display {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 8px;
+  margin: 16px 0;
+}
+
+.countdown-digit {
+  background: var(--bg-card);
+  color: var(--accent-gold);
+  border: 1px solid var(--border-subtle);
+  font-size: 2rem;
+  font-weight: 900;
+  padding: 8px 14px;
+  border-radius: var(--radius-sm);
+  font-variant-numeric: tabular-nums;
+  box-shadow: var(--shadow-sm);
+}
+
+.countdown-sep {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: var(--text-muted);
+}
+
+.info-window-badge {
+  background: rgba(56, 189, 248, 0.12);
+  border: 1px solid var(--accent-oasis);
+  color: var(--text-primary);
+  padding: 10px 14px;
+  border-radius: var(--radius-sm);
+  font-size: 0.82rem;
+  margin-bottom: 16px;
+  text-align: left;
+}
+
+.checkpoints-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  text-align: left;
+}
+
+.checkpoint-card {
+  background: var(--bg-card);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-sm);
+  padding: 12px 14px;
+  transition: all 0.2s ease;
+}
+
+.checkpoint-card.current-checkpoint {
+  border-color: var(--accent-gold);
+  background: rgba(245, 158, 11, 0.08);
+  box-shadow: 0 4px 12px rgba(245, 158, 11, 0.15);
+}
+
+.checkpoint-card.past-checkpoint {
+  opacity: 0.75;
+}
+
+.checkpoint-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 4px;
+}
+
+.checkpoint-title {
+  font-size: 0.9rem;
+  font-weight: 700;
+  color: var(--text-primary);
+}
+
+.checkpoint-time {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+.checkpoint-stats {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-size: 0.8rem;
+  margin-bottom: 8px;
+}
+
+.checkpoint-allocated {
+  font-weight: 800;
+  color: var(--accent-oasis);
+  font-variant-numeric: tabular-nums;
+}
+
+.checkpoint-status {
+  font-weight: 600;
+  color: var(--text-secondary);
+}
+
+.checkpoint-bar-track {
+  width: 100%;
+  height: 6px;
+  background: var(--border-subtle);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.checkpoint-bar-fill {
+  height: 100%;
+  background: var(--accent-oasis);
+  transition: width 0.3s ease;
+}
+
+.current-checkpoint .checkpoint-bar-fill {
+  background: var(--accent-gold);
+}

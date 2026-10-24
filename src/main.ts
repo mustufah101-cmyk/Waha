@@ -5,6 +5,10 @@ import { renderLiquidProgress, initLiquidCanvas } from './components/LiquidProgr
 import { renderLogControls } from './components/LogControls.ts';
 import { renderConditionSelector } from './components/ConditionSelector.ts';
 import { renderOnboardingModal } from './components/SafetyModal.ts';
+import { generateRamadanSchedule } from './engine/ramadanScheduler.ts';
+import { renderRamadanScheduleView } from './components/RamadanScheduleView.ts';
+
+let countdownTimer: any = null;
 
 function renderApp(): void {
   const appEl = document.getElementById('app');
@@ -13,6 +17,7 @@ function renderApp(): void {
   const state = store.getState();
   const target = store.getCalculatedTarget();
   const progress = store.getProgress();
+  const now = store.getNow();
 
   // Update theme on root element
   if (state.ramadanMode) {
@@ -21,10 +26,44 @@ function renderApp(): void {
     document.documentElement.removeAttribute('data-theme');
   }
 
+  // Generate Ramadan schedule if active
+  let ramadanScheduleHtml = '';
+  if (state.ramadanMode) {
+    const schedule = generateRamadanSchedule(
+      target.unroundedTargetL,
+      state.windowConfig,
+      state.todayEntries,
+      now
+    );
+    ramadanScheduleHtml = renderRamadanScheduleView(schedule);
+
+    if (schedule.isFasting && !countdownTimer) {
+      countdownTimer = setInterval(() => {
+        const updated = generateRamadanSchedule(
+          target.unroundedTargetL,
+          state.windowConfig,
+          state.todayEntries,
+          store.getNow()
+        );
+        const card = document.getElementById('ramadan-fasting-card');
+        if (card) {
+          card.outerHTML = renderRamadanScheduleView(updated);
+        }
+      }, 1000);
+    } else if (!schedule.isFasting && countdownTimer) {
+      clearInterval(countdownTimer);
+      countdownTimer = null;
+    }
+  } else if (countdownTimer) {
+    clearInterval(countdownTimer);
+    countdownTimer = null;
+  }
+
   appEl.innerHTML = `
     ${renderHeader(state.ramadanMode)}
     <main>
       ${renderTargetDisplay(target)}
+      ${ramadanScheduleHtml}
       ${renderLiquidProgress(progress)}
       ${renderLogControls({ lastLoggedMl: store.lastLoggedEntry?.amountMl ?? null })}
       ${renderConditionSelector(state.conditions)}
