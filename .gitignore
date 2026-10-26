@@ -14,3 +14,4 @@ dist/
 .claude/
 agent/
 skills-lock.json
+.kilo/

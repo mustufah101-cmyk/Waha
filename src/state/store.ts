@@ -2,7 +2,6 @@ import {
   WahaState,
   UserProfile,
   LogEntry,
-  DayRecord,
   loadStoredState,
   saveStoredState,
   DEFAULT_STATE,
@@ -69,7 +68,7 @@ class Store {
     const key = this.getActiveDateKey();
     const target = this.getCalculatedTarget();
     const totalLogged = this.getTodayLoggedMl();
-    const isAchieved = totalLogged >= target.unroundedTargetL * 1000 * 0.90;
+    totalLogged >= target.unroundedTargetL * 1000 * 0.90; // streak threshold check
 
     this.state.history[key] = {
       dateKey: key,
@@ -229,9 +228,13 @@ class Store {
     const todayTarget = this.getCalculatedTarget();
     const todayLogged = this.getTodayLoggedMl();
     const todayAchieved = todayLogged >= todayTarget.unroundedTargetL * 1000 * 0.90;
-    if (todayAchieved) {
-      streak += 1;
+    if (!todayAchieved) {
+      // Streak is broken if today is not achieved
+      return 0;
     }
+
+    // Today is achieved, start streak at 1
+    streak = 1;
 
     // Check consecutive days prior to today
     let checkDate = new Date(baseDate);

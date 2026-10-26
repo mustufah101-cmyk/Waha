@@ -49,7 +49,7 @@ Build mode: fast
   Learner check: Append `?now=19:00` to the URL, toggle Ramadan mode, inspect the twilight theme and spaced checkpoints, and record the draft demo video.
   Commit: `feat: ramadan scheduler, checkpoints, twilight theme, and demo clock override`
 
-- [ ] **5. Derived Streak, History Strip, and About Safety Modal**
+- [x] **5. Derived Streak, History Strip, and About Safety Modal**
   Becomes usable: Streak calculation derived from history (≥90% of unrounded effective target), next-iftar rollover via `dateKey.ts`, 7-day visual history strip, and persistent About modal with safety disclaimers and principles.
   Why now: Completes the remaining P0 journey, long-term retention loop, and permanent safety compliance reference.
   PRD ref: `prd.md > Features and Behavior > 4. Streak & 7-Day History`, `prd.md > Features and Behavior > 5. Safety Disclaimer`, `prd.md > Screens and Layout > 4. About & Safety Modal`
@@ -74,7 +74,7 @@ Build mode: fast
 - [x] Early usable behavior explored — Slice 2 (Onboarding and "number changes and tells you why" dynamic stacking)
 - [x] Static deployment verified — Slice 3 (Live production bundle)
 - [x] Draft demo video recorded — Slice 4 (Ramadan evening mode with `?now=HH:mm` override)
-- [ ] Final kick-the-tires exploration and feedback completed — Slice 5 (Complete P0 core journey)
+- [x] Final kick-the-tires exploration and feedback completed — Slice 5 (Complete P0 core journey)
 
 ## Final Review
 

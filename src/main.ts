@@ -4,7 +4,8 @@ import { renderTargetDisplay } from './components/TargetDisplay.ts';
 import { renderLiquidProgress, initLiquidCanvas } from './components/LiquidProgress.ts';
 import { renderLogControls } from './components/LogControls.ts';
 import { renderConditionSelector } from './components/ConditionSelector.ts';
-import { renderOnboardingModal } from './components/SafetyModal.ts';
+import { renderOnboardingModal, renderAboutModal } from './components/SafetyModal.ts';
+import { renderHistoryStrip } from './components/HistoryStrip.ts';
 import { generateRamadanSchedule } from './engine/ramadanScheduler.ts';
 import { renderRamadanScheduleView } from './components/RamadanScheduleView.ts';
 
@@ -18,6 +19,8 @@ function renderApp(): void {
   const target = store.getCalculatedTarget();
   const progress = store.getProgress();
   const now = store.getNow();
+  const streakCount = store.getDerivedStreak();
+  const historyStrip = store.getHistoryStrip();
 
   // Update theme on root element
   if (state.ramadanMode) {
@@ -60,15 +63,17 @@ function renderApp(): void {
   }
 
   appEl.innerHTML = `
-    ${renderHeader(state.ramadanMode)}
+    ${renderHeader({ ramadanMode: state.ramadanMode, streakCount, isAboutOpen: store.isAboutOpen })}
     <main>
       ${renderTargetDisplay(target)}
       ${ramadanScheduleHtml}
       ${renderLiquidProgress(progress)}
       ${renderLogControls({ lastLoggedMl: store.lastLoggedEntry?.amountMl ?? null })}
       ${renderConditionSelector(state.conditions)}
+      ${renderHistoryStrip(historyStrip, streakCount)}
     </main>
     ${renderOnboardingModal(state.profile)}
+    ${renderAboutModal(store.isAboutOpen)}
   `;
 
   initLiquidCanvas(progress.percent);
@@ -81,6 +86,21 @@ function attachEventListeners(): void {
   if (ramadanBtn) {
     ramadanBtn.onclick = () => {
       store.toggleRamadanMode();
+    };
+  }
+
+  // About modal
+  const aboutBtn = document.getElementById('btn-open-about');
+  if (aboutBtn) {
+    aboutBtn.onclick = () => {
+      store.openAbout();
+    };
+  }
+
+  const closeAboutBtn = document.getElementById('btn-close-about');
+  if (closeAboutBtn) {
+    closeAboutBtn.onclick = () => {
+      store.closeAbout();
     };
   }
 
@@ -146,6 +166,16 @@ function attachEventListeners(): void {
       const outdoorTime = (outdoorSelect?.value as 'indoors' | 'mixed' | 'outdoors') || 'mixed';
 
       store.completeOnboarding(weightKg, outdoorTime);
+    };
+  }
+
+  // Close About modal on overlay click
+  const aboutOverlay = document.getElementById('about-modal');
+  if (aboutOverlay) {
+    aboutOverlay.onclick = (e) => {
+      if (e.target === aboutOverlay) {
+        store.closeAbout();
+      }
     };
   }
 }
